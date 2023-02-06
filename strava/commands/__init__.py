@@ -1,5 +1,5 @@
 from .activities import get_activities
-from .activity import get_activity
+from .activity import get_activity, post_activity
 from .upload import post_upload
 from .config import set_config
 from .login import login
@@ -10,6 +10,7 @@ from .stats import get_stats
 __all__ = [
     "get_activities",
     "get_activity",
+    "post_activity",
     "post_upload",
     "set_config",
     "login",

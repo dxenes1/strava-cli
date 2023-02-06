@@ -22,12 +22,24 @@ from strava.formatters import (
     format_activity_name,
     apply_formatters,
 )
+
+from dateparser import parse
 import strava.settings
 
 _ACTIVITY_COLUMNS = ("key", "value")
+_VALID_SPORT_TYPE = [
+    "AlpineSki", "BackcountrySki", "Badminton", "Canoeing", 
+    "Crossfit", "EBikeRide", "Elliptical", "EMountainBikeRide", "Golf", "GravelRide", 
+    "Handcycle", "HighIntensityIntervalTraining", "Hike", "IceSkate", "InlineSkate", 
+    "Kayaking", "Kitesurf", "MountainBikeRide", "NordicSki", "Pickleball", "Pilates", 
+    "Racquetball", "Ride", "RockClimbing", "RollerSki", "Rowing", "Run", "Sail", 
+    "Skateboard", "Snowboard", "Snowshoe", "Soccer", "Squash", "StairStepper", 
+    "StandUpPaddling", "Surfing", "Swim", "TableTennis", "Tennis", "TrailRun", 
+    "Velomobile", "VirtualRide", "VirtualRow", "VirtualRun", "Walk", 
+    "WeightTraining", "Wheelchair", "Windsurf", "Workout", "Yoga"    
+]
 
-
-@click.command("activity")
+@click.command("get-activity")
 @click.argument("activity_ids", required=True, nargs=-1)
 @click.option("--imperial_units", "-i", is_flag=True, default=False)
 @output_option()
@@ -42,6 +54,29 @@ def get_activity(output, activity_ids, imperial_units):
         result = api.get_activity(activity_id)
         _format_activity(result, output=output)
 
+@click.command("post-activity")
+@click.option("--name", "-n", required=True)
+@click.option("--type", "-t", required=False, type=click.Choice(['run', 'walk', 'ride', 'swim', 'workout']), default='workout')
+@click.option("--sport_type", "-s", required=True, type=click.Choice(_VALID_SPORT_TYPE))
+@click.option("--start_date_local", "-d", required=True)
+@click.option("--elapsed_time", "-e", required=True, type=click.INT)
+@click.option("--description", "-m", required=False, default="Uploaded with cli-tool ")
+@click.option("--distance", "-l", required=False, type=click.INT, default=0)
+@login_required
+def post_activity(name, type, sport_type, start_date_local, elapsed_time, description, distance):
+    elapsed_time = 60*elapsed_time
+    start_date_local = parse(start_date_local, settings={'RETURN_AS_TIMEZONE_AWARE': True}).isoformat()
+    # print(name, type, sport_type, start_date_local, elapsed_time, description, distance)
+    
+    return api.post_activity(
+        name,
+        type,
+        sport_type,
+        start_date_local,
+        elapsed_time,
+        description,
+        distance
+    )
 
 @format_result(
     table_columns=_ACTIVITY_COLUMNS,

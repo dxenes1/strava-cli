@@ -5,6 +5,7 @@ from strava.commands import (
     logout,
     get_activities,
     get_activity,
+    post_activity,
     get_profile,
     get_stats,
     set_config,
@@ -22,6 +23,7 @@ cli.add_command(login)
 cli.add_command(logout)
 cli.add_command(get_activities)
 cli.add_command(get_activity)
+cli.add_command(post_activity)
 cli.add_command(get_profile)
 cli.add_command(get_stats)
 cli.add_command(set_config)
