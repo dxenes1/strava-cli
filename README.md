@@ -5,7 +5,6 @@
 
 Uses [Strava API](https://developers.strava.com/docs/reference/) to access Strava dataset.
 
-
 ## Installation
 
 Using `Homebrew` on OSX:
